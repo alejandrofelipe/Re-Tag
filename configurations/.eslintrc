@@ -1,0 +1,25 @@
+{
+	"env": {
+		"node": true,
+		"browser": true,
+		"es6": true
+	},
+	"globals": {
+		"chrome": true
+	},
+	"plugins": [
+		"react"
+	],
+	"extends": [
+		"eslint:recommended",
+		"plugin:react/recommended"
+	],
+	"rules": {
+		"no-undef": 0,
+		"no-unused-vars": 0,
+		"react/react-in-jsx-scope": 0,
+		"react/jsx-no-undef": 0,
+		"no-console": 1,
+		"no-mixed-spaces-and-tabs": 0
+	}
+}
