@@ -15,6 +15,11 @@ Retag.Input = React.createClass({
 		handleEnter: React.PropTypes.bool,
 		handleInput: React.PropTypes.bool
 	},
+	getDefaultProps: function () {
+		return {
+			autocomplete: []
+		}
+	},
 	// check if delim exists in txt
 	breaks: function (txt) {
 		var chars = this.state.breaks;
@@ -73,7 +78,7 @@ Retag.Input = React.createClass({
 	onInputSelect: function (e) {
 		var tag = e.target.value;
 		for (var i = 0; i < this.props.autocomplete.length; i++) {
-			if (this.props.autocomplete[i].toLowerCase() === tag.toLowerCase()){
+			if (this.props.autocomplete[i].toLowerCase() === tag.toLowerCase()) {
 				this.addTag(e);
 				this.setState({text: ''});
 				this.refs.txt_tag.value = '';
@@ -87,13 +92,12 @@ Retag.Input = React.createClass({
 		if (query.length > 0)
 			for (var i = 0; i < this.props.autocomplete.length; i++) {
 				if (this.props.autocomplete[i].toLowerCase()
-						.contains(query.toLowerCase())) {
+						.indexOf(query.toLowerCase()) !== -1) {
 					lTags.push(this.props.autocomplete[i])
 				}
 			}
 		this.setState({lTags: lTags});
 	},
-
 	render: function () {
 		var input = <input ref="txt_tag"
 						   className={this.props.css || 'tag-input'}

@@ -98,6 +98,11 @@ Retag.Input = React.createClass({
 		handleEnter: React.PropTypes.bool,
 		handleInput: React.PropTypes.bool
 	},
+	getDefaultProps: function getDefaultProps() {
+		return {
+			autocomplete: []
+		};
+	},
 
 	breaks: function breaks(txt) {
 		var chars = this.state.breaks;
@@ -160,13 +165,12 @@ Retag.Input = React.createClass({
 	queryAutoComplete: function queryAutoComplete(query) {
 		var lTags = [];
 		if (query.length > 0) for (var i = 0; i < this.props.autocomplete.length; i++) {
-			if (this.props.autocomplete[i].toLowerCase().contains(query.toLowerCase())) {
+			if (this.props.autocomplete[i].toLowerCase().indexOf(query.toLowerCase()) !== -1) {
 				lTags.push(this.props.autocomplete[i]);
 			}
 		}
 		this.setState({ lTags: lTags });
 	},
-
 	render: function render() {
 		var input = React.createElement('input', { ref: 'txt_tag',
 			className: this.props.css || 'tag-input',

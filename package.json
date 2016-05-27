@@ -1,6 +1,6 @@
 {
   "name": "ReactTagsInput",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "React tags input component",
   "main": "./bin/react-tags.js",
   "repository": {
