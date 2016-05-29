@@ -24,10 +24,15 @@ gulp.task('styles', () => gulp.src('src/styles-less/react-tags.less')
 	.pipe(gulp.dest('bin'))
 );
 
-gulp.task('scripts', () => gulp.src('src/script-babel/main.jsx')
-	.pipe($.include())
+gulp.task('scripts-lint', () => gulp.src('src/script-babel/**/*.jsx')
 	.pipe($.eslint())
 	.pipe($.eslint.format())
+);
+
+gulp.task('scripts', () => gulp.src('src/script-babel/main.jsx')
+	.pipe($.eslint())
+	.pipe($.eslint.format())
+	.pipe($.include())
 	.pipe($.if('*.jsx', $.babel())).on('error', _error('SCRIPTS'))
 	.pipe($.concat('react-tags.js'))
 	.pipe(gulp.dest('bin'))
@@ -44,8 +49,8 @@ gulp.task('build', cb => {
 });
 
 gulp.task('default', cb => {
-	runSequence('scripts', 'styles', cb);
-	gulp.watch('src/**/*.jsx', ['scripts']);
+	runSequence('scripts-lint', 'scripts', 'style-lint', 'styles', cb);
+	gulp.watch('src/**/*.jsx', ['scripts-lint', 'scripts']);
 	gulp.watch('example/**/*.jsx', ['scripts-example']);
 	gulp.watch('src/**/*.less', ['style-lint', 'styles']);
 });
