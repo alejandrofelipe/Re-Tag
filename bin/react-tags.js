@@ -27,7 +27,7 @@ Retag.Collection = function () {
 			this._observers[i]();
 		}
 	};
-	TagCollection.prototype._has = function (tag, arr) {
+	TagCollection.prototype._has = function (tag) {
 		for (var i = 0; i < this._tags.length; i++) {
 			if (this._tags[i].tag.toLowerCase() === tag.toLowerCase()) return true;
 		}
@@ -82,28 +82,30 @@ Retag.Collection = function () {
 Retag.Input = React.createClass({
 	displayName: 'Input',
 
-	getInitialState: function getInitialState() {
-		return {
-			text: '',
-			breaks: this.props.breaks || [',', ' '],
-			lTags: []
-		};
-	},
 	propTypes: {
 		breaks: React.PropTypes.array,
-		autocomplete: React.PropTypes.array,
+		suggestions: React.PropTypes.array,
 		collection: React.PropTypes.object.isRequired,
 		css: React.PropTypes.string,
 		handleBlur: React.PropTypes.bool,
-		handleEnter: React.PropTypes.bool,
-		handleInput: React.PropTypes.bool
+		handleEnter: React.PropTypes.bool
 	},
 	getDefaultProps: function getDefaultProps() {
 		return {
-			autocomplete: []
+			breaks: [',', ' '],
+			suggestions: [],
+			css: 'tag-input',
+			handleBlur: false,
+			handleEnter: false
 		};
 	},
-
+	getInitialState: function getInitialState() {
+		return {
+			text: '',
+			breaks: this.props.breaks,
+			lTags: []
+		};
+	},
 	breaks: function breaks(txt) {
 		var chars = this.state.breaks;
 		for (var i = 0; i < chars.length; i++) {
@@ -111,96 +113,69 @@ Retag.Input = React.createClass({
 				return true;
 			}
 		}
-
 		return false;
 	},
 
-	setFocus: function setFocus() {
-		this.refs.txt_tag.getDOMNode().focus();
-	},
-
-	onTextChange: function onTextChange(e) {
+	checkEvent: function checkEvent(e) {
 		var txt = e.target.value;
-
-		if (this.breaks(txt)) {
-			if (txt.length !== 1) {
-				this.addTag(e);
+		if (e.type === 'blur' && this.props.handleBlur) this.addTag(txt);else if (e.type === 'change') this.textChange(txt);else if (e.type === 'keyup') {
+			if (e.keyCode === 13 && this.props.handleEnter) {
+				e.preventDefault();
+				this.addTag(txt);
 			}
-		} else {
-			this.queryAutoComplete(txt);
-			this.setState({ text: e.target.value });
 		}
 	},
 
-	addTag: function addTag(e) {
-		var txt = e.target.value;
-
+	addTag: function addTag(txt) {
 		this.props.collection.addRange(txt.split(new RegExp('[' + this.state.breaks.join('') + ']')));
-
 		this.setState({ lTags: [], text: '' });
 	},
 
-	onKeyInput: function onKeyInput(e) {
-		if (e.keyCode === 13) {
-			if (e.preventDefault) {
-				e.preventDefault();
-			}
-			this.addTag(e);
-			return false;
-		}
-	},
-
-	onInputSelect: function onInputSelect(e) {
-		var tag = e.target.value;
-		for (var i = 0; i < this.props.autocomplete.length; i++) {
-			if (this.props.autocomplete[i].toLowerCase() === tag.toLowerCase()) {
-				this.addTag(e);
-				this.setState({ text: '' });
-				this.refs.txt_tag.value = '';
-				break;
-			}
+	textChange: function textChange(txt) {
+		if (this.breaks(txt) || txt === this.state.text) {
+			if (txt.length !== 1) this.addTag(txt);
+		} else {
+			this.queryAutoComplete(txt);
+			this.setState({ text: txt });
 		}
 	},
 
 	queryAutoComplete: function queryAutoComplete(query) {
 		var lTags = [];
-		if (query.length > 0) for (var i = 0; i < this.props.autocomplete.length; i++) {
-			if (this.props.autocomplete[i].toLowerCase().indexOf(query.toLowerCase()) !== -1) {
-				lTags.push(this.props.autocomplete[i]);
+		if (query.length > 0) for (var i = 0; i < this.props.suggestions.length; i++) {
+			if (this.props.suggestions[i].toLowerCase().indexOf(query.toLowerCase()) !== -1) {
+				lTags.push(this.props.suggestions[i]);
 			}
 		}
 		this.setState({ lTags: lTags });
 	},
 	render: function render() {
 		var input = React.createElement('input', { ref: 'txt_tag',
-			className: this.props.css || 'tag-input',
+			className: this.props.css,
 			type: 'text',
 			value: this.state.text,
-			onChange: this.onTextChange,
-			list: 'lTags',
-			onInput: this.onInputSelect
-		}),
-		    dataList = null;
+			onChange: this.checkEvent,
+			onBlur: this.checkEvent,
+			onKeyUp: this.checkEvent,
+			list: 'lTags'
+		});
 
-		if (this.props.handleBlur) input.props.onBlur = this.addTag;
-
-		if (this.props.handleEnter) input.props.onKeyUp = this.onKeyInput;
-
-		if (this.state.lTags.length > 0) {
-			dataList = React.createElement(
-				'datalist',
-				{ id: 'lTags' },
-				this.state.lTags.map(function (val, inx) {
-					return React.createElement('option', { key: inx, value: val });
-				})
-			);
-		}
+		var dataList = React.createElement(
+			'datalist',
+			{ id: 'lTags' },
+			this.state.lTags.map(function (val, inx) {
+				return React.createElement('option', { key: inx, value: val });
+			}.bind(this))
+		);
 
 		return React.createElement(
 			'div',
 			null,
+			' ',
 			input,
-			dataList
+			' ',
+			dataList,
+			' '
 		);
 	}
 });

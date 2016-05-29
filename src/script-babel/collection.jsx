@@ -26,7 +26,7 @@ Retag.Collection = (function () {
 			this._observers[i]();
 		}
 	};
-	TagCollection.prototype._has = function (tag, arr) {
+	TagCollection.prototype._has = function (tag) {
 		for (var i = 0; i < this._tags.length; i++) {
 			if (this._tags[i].tag.toLowerCase() === tag.toLowerCase())
 				return true;

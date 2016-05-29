@@ -10,9 +10,10 @@
 		minLength: 2
 	});
 
-		handleInput: true
 	ReactDOM.render(React.createElement(Retag.Input, { collection: arr,
 		suggestions: ['ok', 'fio', 'alejandro', 'felipe'],
+		handleEnter: true,
+		handleBlur: true
 	}), document.getElementById('input'));
 
 	ReactDOM.render(React.createElement(Retag.Tags, { collection: arr
