@@ -8,7 +8,7 @@ Retag.Input = React.createClass({
 	},
 	propTypes: {
 		breaks: React.PropTypes.array,
-		autocomplete: React.PropTypes.array,
+		suggestions: React.PropTypes.array,
 		collection: React.PropTypes.object.isRequired,
 		css: React.PropTypes.string,
 		handleBlur: React.PropTypes.bool,
@@ -17,7 +17,7 @@ Retag.Input = React.createClass({
 	},
 	getDefaultProps: function () {
 		return {
-			autocomplete: []
+			suggestions: [],
 		}
 	},
 	// check if delim exists in txt
@@ -90,10 +90,10 @@ Retag.Input = React.createClass({
 	queryAutoComplete: function (query) {
 		var lTags = [];
 		if (query.length > 0)
-			for (var i = 0; i < this.props.autocomplete.length; i++) {
-				if (this.props.autocomplete[i].toLowerCase()
+			for (var i = 0; i < this.props.suggestions.length; i++) {
+				if (this.props.suggestions[i].toLowerCase()
 						.indexOf(query.toLowerCase()) !== -1) {
-					lTags.push(this.props.autocomplete[i])
+					lTags.push(this.props.suggestions[i])
 				}
 			}
 		this.setState({lTags: lTags});

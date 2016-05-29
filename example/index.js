@@ -1,5 +1,5 @@
 (function () {
-	var arr = new RTCollection({
+	var arr = new Retag.Collection({
 		onAdd: function onAdd(i, l) {
 			return i;
 		},
@@ -10,11 +10,11 @@
 		minLength: 2
 	});
 
-	ReactDOM.render(React.createElement(RTInput, { collection: arr,
-		autocomplete: ['ok', 'fio', 'alejandro', 'felipe'],
 		handleInput: true
+	ReactDOM.render(React.createElement(Retag.Input, { collection: arr,
+		suggestions: ['ok', 'fio', 'alejandro', 'felipe'],
 	}), document.getElementById('input'));
 
-	ReactDOM.render(React.createElement(RTTags, { collection: arr
+	ReactDOM.render(React.createElement(Retag.Tags, { collection: arr
 	}), document.getElementById('tags'));
 })();
