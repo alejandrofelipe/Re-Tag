@@ -85,6 +85,8 @@ Retag.Input = React.createClass({
 	propTypes: {
 		breaks: React.PropTypes.array,
 		suggestions: React.PropTypes.array,
+		suggestions_max: React.PropTypes.number,
+		suggestions_start_size: React.PropTypes.number,
 		collection: React.PropTypes.object.isRequired,
 		css: React.PropTypes.string,
 		handleBlur: React.PropTypes.bool,
@@ -94,6 +96,8 @@ Retag.Input = React.createClass({
 		return {
 			breaks: [',', ' '],
 			suggestions: [],
+			suggestions_max: 15,
+			suggestions_start_size: 1,
 			css: 'tag-input',
 			handleBlur: false,
 			handleEnter: false
@@ -142,10 +146,12 @@ Retag.Input = React.createClass({
 
 	queryAutoComplete: function queryAutoComplete(query) {
 		var lTags = [];
-		if (query.length > 0) for (var i = 0; i < this.props.suggestions.length; i++) {
-			if (this.props.suggestions[i].toLowerCase().indexOf(query.toLowerCase()) !== -1) {
-				lTags.push(this.props.suggestions[i]);
-			}
+		if (query.length >= this.props.suggestions_start_size) {
+			lTags = this.props.suggestions.filter(function (val) {
+				return val.toLowerCase().indexOf(query.toLowerCase()) > -1;
+			}).sort(function (val) {
+				return val.toLowerCase().indexOf(query.toLowerCase());
+			}).slice(0, this.props.suggestions_max);
 		}
 		this.setState({ lTags: lTags });
 	},

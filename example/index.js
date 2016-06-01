@@ -10,12 +10,15 @@
 		minLength: 2
 	});
 
-	ReactDOM.render(React.createElement(Retag.Input, { collection: arr,
-		suggestions: ['ok', 'fio', 'alejandro', 'felipe'],
+	ReactDOM.render(React.createElement(Retag.Input, {
+		collection: arr,
+		suggestions: ['alejandro', 'felipe', 'silva', 'react', 'tags', 'input', 'npm', 'nodejs', 'retag', 'javascript', 'module', 'component', 'form', 'array', 'object'],
+		// suggestions_max: 1,
 		handleEnter: true,
 		handleBlur: true
 	}), document.getElementById('input'));
 
-	ReactDOM.render(React.createElement(Retag.Tags, { collection: arr
+	ReactDOM.render(React.createElement(Retag.Tags, {
+		collection: arr
 	}), document.getElementById('tags'));
 })();
