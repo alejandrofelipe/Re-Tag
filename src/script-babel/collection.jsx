@@ -79,5 +79,10 @@ Retag.Collection = (function () {
 			this._observers.push(callback);
 		}
 	};
+
+	TagCollection.prototype.addListener = function (eName, cb) {
+		this['_' + eName] = cb;
+	};
+
 	return TagCollection;
 })();

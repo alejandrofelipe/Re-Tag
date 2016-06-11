@@ -3,6 +3,9 @@
 		onAdd: function onAdd(i, l) {
 			return i;
 		},
+		onAdded: function onAdd(i) {
+			console.log(i, 'added');
+		},
 		onDelete: function onDelete(i, l) {
 			return i;
 		},
@@ -19,6 +22,9 @@
 	}), document.getElementById('input'));
 
 	ReactDOM.render(React.createElement(Retag.Tags, {
-		collection: arr
+		collection: arr,
+		onUpdate: function () {
+			console.log('aq')
+		}
 	}), document.getElementById('tags'));
 })();

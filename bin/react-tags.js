@@ -7,6 +7,7 @@ Retag.Collection = function () {
 		this._onAdd = null;
 		this._onDelete = null;
 		this._onAdd = options && typeof options.onAdd === 'function' ? options.onAdd : null;
+		this._onAdded = options && typeof options.onAdded === 'function' ? options.onAdded : null;
 		this._onDelete = options && typeof options.onDelete === 'function' ? options.onDelete : null;
 		this._allowEquals = options && typeof options.allowEquals === 'boolean' ? options.allowEquals : true;
 		this._minLength = options && typeof options.minLength == 'number' ? options.minLength : 2;
@@ -20,6 +21,7 @@ Retag.Collection = function () {
 		if (tag) {
 			this._index++;
 			this._tags.push({ tag: tag, key: '' + this._index });
+			if (this._onAdded) this._onAdded(tag, this._tags);
 		}
 	};
 	TagCollection.prototype._fire = function () {
@@ -77,6 +79,11 @@ Retag.Collection = function () {
 			this._observers.push(callback);
 		}
 	};
+
+	TagCollection.prototype.addListener = function (eName, cb) {
+		this['_' + eName] = cb;
+	};
+
 	return TagCollection;
 }();
 Retag.Input = React.createClass({
@@ -195,17 +202,27 @@ Retag.Tags = React.createClass({
 		};
 	},
 	propTypes: {
-		collection: React.PropTypes.object.isRequired
+		collection: React.PropTypes.object.isRequired,
+		onUpdate: React.PropTypes.func
+	},
+
+	getDefaultProps: function getDefaultProps() {
+		return {
+			onUpdate: function onUpdate() {}
+		};
 	},
 
 	componentDidMount: function componentDidMount() {
-		var _ = this;
 		var src = this.props.collection;
 		src.listen(function () {
-			_.setState({
+			this.setState({
 				tags: src._tags
 			});
-		});
+		}.bind(this));
+	},
+
+	componentDidUpdate: function componentDidUpdate() {
+		this.props.onUpdate();
 	},
 
 	removeTag: function removeTag(e) {
@@ -219,11 +236,8 @@ Retag.Tags = React.createClass({
 			'div',
 			{ key: e.key, className: _.props.css || 'tag' },
 			e.tag,
-			React.createElement(
-				'button',
-				{ 'data-tag': e.key, style: { display: 'inline' }, className: _.props.deleteCss || 'tag-delete', onClick: _.removeTag },
-				'  '
-			)
+			React.createElement('button', { 'data-tag': e.key, style: { display: 'inline' }, className: _.props.deleteCss || 'tag-delete',
+				onClick: _.removeTag })
 		);
 	},
 
