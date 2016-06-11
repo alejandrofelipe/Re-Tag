@@ -6,6 +6,7 @@ Retag.Collection = (function () {
 		this._onAdd = null;
 		this._onDelete = null;
 		this._onAdd = options && typeof (options.onAdd) === 'function' ? options.onAdd : null;
+		this._onAdded = options && typeof (options.onAdded) === 'function' ? options.onAdded : null;
 		this._onDelete = options && typeof (options.onDelete) === 'function' ? options.onDelete : null;
 		this._allowEquals = options && typeof (options.allowEquals) === 'boolean' ? options.allowEquals : true;
 		this._minLength = options && typeof (options.minLength) == 'number' ? options.minLength : 2;
@@ -19,6 +20,7 @@ Retag.Collection = (function () {
 		if (tag) {
 			this._index++;
 			this._tags.push({tag: tag, key: '' + this._index});
+			if (this._onAdded) this._onAdded(tag, this._tags)
 		}
 	};
 	TagCollection.prototype._fire = function () {
