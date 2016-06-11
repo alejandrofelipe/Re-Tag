@@ -49,8 +49,9 @@ gulp.task('build', cb => {
 });
 
 gulp.task('default', cb => {
-	runSequence('scripts-lint', 'scripts', 'style-lint', 'styles', cb);
+	runSequence('scripts-lint', 'scripts', 'style-lint', 'styles', 'js-min', cb);
 	gulp.watch('src/**/*.jsx', ['scripts-lint', 'scripts']);
 	gulp.watch('example/**/*.jsx', ['scripts-example']);
 	gulp.watch('src/**/*.less', ['style-lint', 'styles']);
+	gulp.watch('bin/react-tags.js', ['js-min'])
 });
